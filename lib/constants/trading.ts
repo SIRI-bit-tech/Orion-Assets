@@ -1,0 +1,132 @@
+export const ORDER_TYPES = {
+  MARKET: "MARKET",
+  LIMIT: "LIMIT",
+  STOP: "STOP",
+  STOP_LIMIT: "STOP_LIMIT",
+} as const
+
+export const ORDER_SIDES = {
+  BUY: "BUY",
+  SELL: "SELL",
+} as const
+
+export const ORDER_STATUS = {
+  PENDING: "PENDING",
+  OPEN: "OPEN",
+  PARTIALLY_FILLED: "PARTIALLY_FILLED",
+  FILLED: "FILLED",
+  CANCELLED: "CANCELLED",
+  REJECTED: "REJECTED",
+  EXPIRED: "EXPIRED",
+} as const
+
+export const POSITION_SIDES = {
+  LONG: "LONG",
+  SHORT: "SHORT",
+} as const
+
+export const POSITION_STATUS = {
+  OPEN: "OPEN",
+  CLOSED: "CLOSED",
+} as const
+
+export const TIME_IN_FORCE = {
+  GTC: "GTC", // Good Till Cancelled
+  DAY: "DAY", // Day Order
+  IOC: "IOC", // Immediate or Cancel
+  FOK: "FOK", // Fill or Kill
+} as const
+
+export const ASSET_CLASSES = {
+  STOCK: "STOCK",
+  ETF: "ETF",
+  CRYPTO: "CRYPTO",
+  FOREX: "FOREX",
+  COMMODITY: "COMMODITY",
+  INDEX: "INDEX",
+} as const
+
+export const TRANSACTION_TYPES = {
+  DEPOSIT: "DEPOSIT",
+  WITHDRAWAL: "WITHDRAWAL",
+  TRADE: "TRADE",
+  FEE: "FEE",
+  DIVIDEND: "DIVIDEND",
+  INTEREST: "INTEREST",
+  ADJUSTMENT: "ADJUSTMENT",
+} as const
+
+export const TRANSACTION_STATUS = {
+  PENDING: "PENDING",
+  PROCESSING: "PROCESSING",
+  COMPLETED: "COMPLETED",
+  FAILED: "FAILED",
+  CANCELLED: "CANCELLED",
+} as const
+
+export const KYC_STATUS = {
+  NOT_STARTED: "NOT_STARTED",
+  PENDING: "PENDING",
+  UNDER_REVIEW: "UNDER_REVIEW",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
+  EXPIRED: "EXPIRED",
+} as const
+
+export const KYC_VERIFICATION_LEVELS = {
+  BASIC: "BASIC",
+  INTERMEDIATE: "INTERMEDIATE",
+  ADVANCED: "ADVANCED",
+} as const
+
+export const ACCOUNT_STATUS = {
+  ACTIVE: "ACTIVE",
+  SUSPENDED: "SUSPENDED",
+  CLOSED: "CLOSED",
+  PENDING_VERIFICATION: "PENDING_VERIFICATION",
+} as const
+
+export const USER_ROLES = {
+  USER: "USER",
+  ADMIN: "ADMIN",
+  SUPER_ADMIN: "SUPER_ADMIN",
+} as const
+
+export const ALERT_TYPES = {
+  PRICE: "PRICE",
+  VOLUME: "VOLUME",
+  PERCENTAGE_CHANGE: "PERCENTAGE_CHANGE",
+  MARGIN_CALL: "MARGIN_CALL",
+  POSITION_CLOSED: "POSITION_CLOSED",
+} as const
+
+export const ALERT_CONDITIONS = {
+  ABOVE: "ABOVE",
+  BELOW: "BELOW",
+  CROSSES_ABOVE: "CROSSES_ABOVE",
+  CROSSES_BELOW: "CROSSES_BELOW",
+} as const
+
+// Trading limits and fees
+export const TRADING_LIMITS = {
+  MIN_ORDER_VALUE: 10,
+  MAX_ORDER_VALUE: 1000000,
+  MAX_LEVERAGE: 5,
+  MARGIN_CALL_THRESHOLD: 0.3,
+  LIQUIDATION_THRESHOLD: 0.2,
+} as const
+
+export const TRADING_FEES = {
+  STOCK_COMMISSION: 0.001, // 0.1%
+  CRYPTO_COMMISSION: 0.002, // 0.2%
+  FOREX_COMMISSION: 0.0005, // 0.05%
+  WITHDRAWAL_FEE: 5,
+} as const
+
+// Market data refresh intervals (in milliseconds)
+export const REFRESH_INTERVALS = {
+  REAL_TIME: 1000,
+  FAST: 5000,
+  NORMAL: 30000,
+  SLOW: 60000,
+} as const
