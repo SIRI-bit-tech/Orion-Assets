@@ -61,24 +61,3 @@ runTests().catch(error => {
     process.exit(1);
   });
 });
-  console.log(accountResult.message);
-  
-  console.log('\n✅ All database tests completed successfully!');
-  console.log(accountResult.message);
-  
-  console.log('\n✅ All database tests completed successfully!');
-  
-  // Cleanup
-  await closeDbConnection();
-}
-
-// Run the tests
-runTests().catch(error => {
-  console.error('Test failed with error:', error);
-  closeDbConnection().finally(() => {
-    process.exit(1);
-  });
-});
-  console.error('Test failed with error:', Error);
-  process.exit(1);
-});
