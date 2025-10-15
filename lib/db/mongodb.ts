@@ -54,6 +54,9 @@ export async function closeDbConnection(): Promise<void> {
   try {
     const mongoClient = await clientPromise
     await mongoClient.close()
+    if (process.env.NODE_ENV === "development") {
+      global._mongoClientPromise = undefined
+    }
     console.log("MongoDB connection closed successfully")
   } catch (error) {
     console.error("Error closing MongoDB connection:", error)

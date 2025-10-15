@@ -1,3 +1,4 @@
+import { closeDbConnection } from '../lib/db/mongodb';
 import { testDatabaseConnection, verifyCollections } from '../lib/db/test-connection';
 import { testUserOperations, testAccountOperations } from '../lib/db/test-user-operations';
 
@@ -11,6 +12,7 @@ async function runTests() {
   
   if (!connectionResult.success) {
     console.error('Database connection failed. Please check your MONGODB_URI in .env.local');
+    await closeDbConnection();
     process.exit(1);
   }
   
@@ -47,10 +49,36 @@ async function runTests() {
   console.log(accountResult.message);
   
   console.log('\n✅ All database tests completed successfully!');
+  
+  // Cleanup
+  await closeDbConnection();
 }
 
 // Run the tests
 runTests().catch(error => {
   console.error('Test failed with error:', error);
+  closeDbConnection().finally(() => {
+    process.exit(1);
+  });
+});
+  console.log(accountResult.message);
+  
+  console.log('\n✅ All database tests completed successfully!');
+  console.log(accountResult.message);
+  
+  console.log('\n✅ All database tests completed successfully!');
+  
+  // Cleanup
+  await closeDbConnection();
+}
+
+// Run the tests
+runTests().catch(error => {
+  console.error('Test failed with error:', error);
+  closeDbConnection().finally(() => {
+    process.exit(1);
+  });
+});
+  console.error('Test failed with error:', Error);
   process.exit(1);
 });
