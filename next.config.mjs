@@ -77,22 +77,21 @@ const nextConfig = {
 
     return config;
   },
-  experimental: {
-    serverComponentsExternalPackages: [
-      "mongodb",
-      "better-auth",
-      "@mongodb-js/zstd",
-      "snappy",
-      "kerberos",
-      "mongodb-client-encryption",
-      "utf-8-validate",
-      "bufferutil",
-      "socks",
-      "aws4",
-      "gcp-metadata",
-      "gaxios",
-    ],
-  },
+  serverExternalPackages: [
+    "mongodb",
+    "better-auth",
+    "@mongodb-js/zstd",
+    "snappy",
+    "kerberos",
+    "mongodb-client-encryption",
+    "utf-8-validate",
+    "bufferutil",
+    "socks",
+    "aws4",
+    "gcp-metadata",
+    "gaxios",
+  ],
+  experimental: {},
 };
 
 export default nextConfig;

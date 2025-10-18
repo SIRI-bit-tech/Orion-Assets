@@ -1,14 +1,33 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import clientPromise from "@/lib/db/mongodb";
+import { MongoClient } from "mongodb";
 import { emailService } from "@/lib/services/email";
 
 if (!process.env.BETTER_AUTH_SECRET) {
   throw new Error("BETTER_AUTH_SECRET environment variable is required");
 }
 
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI environment variable is required");
+}
+
+// Create MongoDB client following Better-Auth documentation
+const client = new MongoClient(process.env.MONGODB_URI, {
+  serverApi: {
+    version: "1" as any,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+// Get database instance
+const dbName = process.env.MONGODB_DB || "orion-assets-broker";
+const db = client.db(dbName);
+
 export const auth = betterAuth({
-  database: mongodbAdapter(clientPromise as any),
+  database: mongodbAdapter(db, {
+    client: client, // Optional: enables database transactions
+  }),
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
