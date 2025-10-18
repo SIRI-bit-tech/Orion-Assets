@@ -63,6 +63,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           email: validated.email,
           password: validated.password,
           name: validated.fullName,
+          fullName: validated.fullName,
+          country: validated.country,
+          investmentGoals: validated.investmentGoals,
+          riskTolerance: validated.riskTolerance,
+          preferredIndustry: validated.preferredIndustry,
+          role: "USER",
+          status: "ACTIVE",
           callbackURL: "/dashboard",
         });
 
