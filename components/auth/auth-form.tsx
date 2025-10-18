@@ -18,23 +18,11 @@ import { signIn, signUp } from "@/lib/auth/client";
 import { signUpSchema, signInSchema } from "@/lib/utils/validation";
 import { Star } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { CountrySelect } from "@/components/ui/country-select";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
 }
-
-const COUNTRIES = [
-  "United States",
-  "United Kingdom",
-  "Canada",
-  "Australia",
-  "Germany",
-  "France",
-  "Japan",
-  "Singapore",
-  "Hong Kong",
-  "United Arab Emirates",
-];
 
 const INVESTMENT_GOALS = ["Growth", "Income", "Preservation", "Speculation"];
 const RISK_TOLERANCE = ["Conservative", "Moderate", "Aggressive"];
@@ -56,7 +44,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    country: "",
+    country: "US",
     password: "",
     investmentGoals: "",
     riskTolerance: "",
@@ -171,23 +159,13 @@ export function AuthForm({ mode }: AuthFormProps) {
             {mode === "signup" && (
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
-                <Select
+                <CountrySelect
                   value={formData.country}
                   onValueChange={(value) =>
                     setFormData({ ...formData, country: value })
                   }
-                >
-                  <SelectTrigger className="bg-secondary border-border">
-                    <SelectValue placeholder="Select your country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {COUNTRIES.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  placeholder="Select your country"
+                />
                 <p className="text-xs text-muted-foreground">
                   Helps us show market data and news relevant to you.
                 </p>
@@ -219,7 +197,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                       setFormData({ ...formData, investmentGoals: value })
                     }
                   >
-                    <SelectTrigger className="bg-secondary border-border">
+                    <SelectTrigger className="w-full bg-secondary border-border">
                       <SelectValue placeholder="Select your goal" />
                     </SelectTrigger>
                     <SelectContent>
@@ -240,7 +218,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                       setFormData({ ...formData, riskTolerance: value })
                     }
                   >
-                    <SelectTrigger className="bg-secondary border-border">
+                    <SelectTrigger className="w-full bg-secondary border-border">
                       <SelectValue placeholder="Select your risk level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -261,7 +239,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                       setFormData({ ...formData, preferredIndustry: value })
                     }
                   >
-                    <SelectTrigger className="bg-secondary border-border">
+                    <SelectTrigger className="w-full bg-secondary border-border">
                       <SelectValue placeholder="Select your preferred industry" />
                     </SelectTrigger>
                     <SelectContent>
@@ -284,7 +262,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
             <Button
               type="submit"
-              className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               disabled={isLoading}
             >
               {isLoading
