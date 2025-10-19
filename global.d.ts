@@ -223,6 +223,31 @@ declare global {
     timestamp: Date
   }
 
+  // Socket.io types
+  interface ServerToClientEvents {
+    price_update: (data: MarketQuote[]) => void
+    order_update: (data: Order) => void
+    position_update: (data: Position) => void
+    notification: (data: { message: string; type: 'success' | 'error' | 'info' }) => void
+    subscription_confirmed: (symbols: string[]) => void
+    pong: () => void
+  }
+
+  interface ClientToServerEvents {
+    subscribe_prices: (symbols: string[]) => void
+    unsubscribe_prices: (symbols: string[]) => void
+    ping: () => void
+  }
+
+  interface InterServerEvents {
+    ping: () => void
+  }
+
+  interface SocketData {
+    userId?: string
+    symbols?: string[]
+  }
+
   interface NewsArticle {
     id: string
     title: string

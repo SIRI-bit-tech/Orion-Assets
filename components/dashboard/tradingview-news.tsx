@@ -2,42 +2,40 @@
 
 import { useEffect, useRef, useState } from "react"
 
-interface TradingViewHeatmapProps {
+interface TradingViewNewsProps {
   height?: number
   width?: string
-  exchange?: string
+  symbols?: string[]
+  feedMode?: "all" | "symbol"
 }
 
-export default function TradingViewHeatmap({ 
+export default function TradingViewNews({ 
   height = 400, 
   width = "100%",
-  exchange = "NASDAQ"
-}: TradingViewHeatmapProps) {
+  symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA"],
+  feedMode = "all"
+}: TradingViewNewsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     if (!containerRef.current || isLoaded) return
 
-    // Load TradingView Market Heatmap widget script
+    // Load TradingView Timeline widget script
     const script = document.createElement('script')
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js'
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-timeline.js'
     script.async = true
     script.innerHTML = JSON.stringify({
-      exchanges: [exchange],
-      dataSource: "SPX500",
-      grouping: "sector",
-      blockSize: "market_cap_calc",
-      blockColor: "change",
-      locale: "en",
-      symbolUrl: "",
+      feedMode: feedMode,
       colorTheme: "light",
-      hasTopBar: false,
-      isDataSetEnabled: false,
-      isZoomEnabled: true,
-      hasSymbolTooltip: true,
+      isTransparent: false,
+      displayMode: "regular",
       width: width,
-      height: height
+      height: height,
+      locale: "en",
+      ...(feedMode === "symbol" && symbols.length > 0 && {
+        symbol: symbols[0]
+      })
     })
     
     script.onload = () => {
@@ -51,7 +49,7 @@ export default function TradingViewHeatmap({
         containerRef.current.removeChild(script)
       }
     }
-  }, [height, width, exchange, isLoaded])
+  }, [height, width, symbols, feedMode, isLoaded])
 
   return (
     <div className="w-full">
@@ -62,7 +60,7 @@ export default function TradingViewHeatmap({
       />
       {!isLoaded && (
         <div className="flex items-center justify-center h-full">
-          <div className="text-gray-500">Loading heatmap...</div>
+          <div className="text-gray-500">Loading news...</div>
         </div>
       )}
     </div>

@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "node server.js",
+    "dev:next": "next dev",
     "lint": "next lint",
-    "start": "next start",
+    "start": "node server.js",
+    "start:next": "next start",
     "db:production-check": "tsx --env-file=.env.local scripts/db-production-check.ts"
   },
   "dependencies": {
@@ -77,6 +79,8 @@
     "recharts": "latest",
     "shadcn": "latest",
     "snappy": "latest",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "socks": "latest",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.5.5",

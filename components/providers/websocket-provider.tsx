@@ -1,29 +1,52 @@
 "use client"
 
 import { createContext, useContext, type ReactNode } from "react"
-import { useWebSocket, type WebSocketMessage } from "@/lib/websocket/client"
+import { useSocket, type SocketMessage } from "@/lib/websocket/client"
 
-type WebSocketContextType = {
+type SocketContextType = {
   isConnected: boolean
-  lastMessage: WebSocketMessage | null
-  sendMessage: (message: WebSocketMessage) => void
+  lastMessage: SocketMessage | null
+  sendMessage: (event: keyof ClientToServerEvents, data?: any) => void
+  subscribeToPrices: (symbols: string[]) => void
+  unsubscribeFromPrices: (symbols: string[]) => void
+  ping: () => void
 }
 
-const WebSocketContext = createContext<WebSocketContextType | null>(null)
+const SocketContext = createContext<SocketContextType | null>(null)
 
-export function WebSocketProvider({ children }: { children: ReactNode }) {
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3000/api/ws"
-  const { isConnected, lastMessage, sendMessage } = useWebSocket(wsUrl)
+export function SocketProvider({ children }: { children: ReactNode }) {
+  const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000"
+  const { 
+    isConnected, 
+    lastMessage, 
+    sendMessage, 
+    subscribeToPrices, 
+    unsubscribeFromPrices, 
+    ping 
+  } = useSocket(socketUrl)
 
   return (
-    <WebSocketContext.Provider value={{ isConnected, lastMessage, sendMessage }}>{children}</WebSocketContext.Provider>
+    <SocketContext.Provider value={{ 
+      isConnected, 
+      lastMessage, 
+      sendMessage, 
+      subscribeToPrices, 
+      unsubscribeFromPrices, 
+      ping 
+    }}>
+      {children}
+    </SocketContext.Provider>
   )
 }
 
-export function useWebSocketContext() {
-  const context = useContext(WebSocketContext)
+export function useSocketContext() {
+  const context = useContext(SocketContext)
   if (!context) {
-    throw new Error("useWebSocketContext must be used within WebSocketProvider")
+    throw new Error("useSocketContext must be used within SocketProvider")
   }
   return context
 }
+
+// Keep the old name for backward compatibility
+export const WebSocketProvider = SocketProvider
+export const useWebSocketContext = useSocketContext
