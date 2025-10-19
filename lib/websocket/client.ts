@@ -1,71 +1,104 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { io, Socket } from "socket.io-client"
 
-export type WebSocketMessage = {
+export type SocketMessage = {
   type: "price_update" | "order_update" | "position_update" | "notification"
   data: any
 }
 
-export function useWebSocket(url: string) {
+export function useSocket(url: string, userId?: string) {
   const [isConnected, setIsConnected] = useState(false)
-  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null)
-  const wsRef = useRef<WebSocket | null>(null)
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>()
+  const [lastMessage, setLastMessage] = useState<SocketMessage | null>(null)
+  const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
 
   useEffect(() => {
     function connect() {
-      const ws = new WebSocket(url)
+      const socket = io(url, {
+        path: '/api/socketio',
+        auth: {
+          userId: userId
+        },
+        transports: ['websocket', 'polling']
+      })
 
-      ws.onopen = () => {
-        console.log("[v0] WebSocket connected")
+      socket.on("connect", () => {
+        console.log("[Socket.io] Connected:", socket.id)
         setIsConnected(true)
-      }
+      })
 
-      ws.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data) as WebSocketMessage
-          setLastMessage(message)
-        } catch (error) {
-          console.error("[v0] Failed to parse WebSocket message:", error)
-        }
-      }
-
-      ws.onerror = (error) => {
-        console.error("[v0] WebSocket error:", error)
-      }
-
-      ws.onclose = () => {
-        console.log("[v0] WebSocket disconnected")
+      socket.on("disconnect", () => {
+        console.log("[Socket.io] Disconnected")
         setIsConnected(false)
+      })
 
-        // Reconnect after 5 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          console.log("[v0] Reconnecting WebSocket...")
-          connect()
-        }, 5000)
-      }
+      socket.on("connect_error", (error) => {
+        console.error("[Socket.io] Connection error:", error)
+        setIsConnected(false)
+      })
 
-      wsRef.current = ws
+      // Handle different message types
+      socket.on("price_update", (data: MarketQuote[]) => {
+        setLastMessage({ type: "price_update", data })
+      })
+
+      socket.on("order_update", (data: Order) => {
+        setLastMessage({ type: "order_update", data })
+      })
+
+      socket.on("position_update", (data: Position) => {
+        setLastMessage({ type: "position_update", data })
+      })
+
+      socket.on("notification", (data: { message: string; type: 'success' | 'error' | 'info' }) => {
+        setLastMessage({ type: "notification", data })
+      })
+
+      socket.on("subscription_confirmed", (symbols: string[]) => {
+        console.log("[Socket.io] Subscribed to symbols:", symbols)
+      })
+
+      socket.on("pong", () => {
+        console.log("[Socket.io] Pong received")
+      })
+
+      socketRef.current = socket
     }
 
     connect()
 
     return () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current)
-      }
-      if (wsRef.current) {
-        wsRef.current.close()
+      if (socketRef.current) {
+        socketRef.current.disconnect()
       }
     }
-  }, [url])
+  }, [url, userId])
 
-  const sendMessage = (message: WebSocketMessage) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(message))
+  const sendMessage = (event: keyof ClientToServerEvents, data?: any) => {
+    if (socketRef.current && socketRef.current.connected) {
+      socketRef.current.emit(event, data)
     }
   }
 
-  return { isConnected, lastMessage, sendMessage }
+  const subscribeToPrices = (symbols: string[]) => {
+    sendMessage("subscribe_prices", symbols)
+  }
+
+  const unsubscribeFromPrices = (symbols: string[]) => {
+    sendMessage("unsubscribe_prices", symbols)
+  }
+
+  const ping = () => {
+    sendMessage("ping")
+  }
+
+  return { 
+    isConnected, 
+    lastMessage, 
+    sendMessage, 
+    subscribeToPrices, 
+    unsubscribeFromPrices, 
+    ping 
+  }
 }

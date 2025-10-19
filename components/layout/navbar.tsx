@@ -17,7 +17,7 @@ import { Logo } from "@/components/ui/logo"
 
 export function Navbar() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session, isPending } = useSession()
 
   const handleSignOut = async () => {
     await signOut()
@@ -88,10 +88,12 @@ export function Navbar() {
               <Button variant="ghost" className="flex items-center gap-2 px-2">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                    {session?.user?.name ? getInitials(session.user.name) : "U"}
+                    {isPending ? "..." : session?.user?.name ? getInitials(session.user.name) : "U"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="hidden md:inline-block text-sm font-medium">{session?.user?.name || "User"}</span>
+                <span className="hidden md:inline-block text-sm font-medium">
+                  {isPending ? "Loading..." : session?.user?.name || "User"}
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
